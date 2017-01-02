@@ -1,0 +1,1 @@
+GenericTest('cell','Toeplitz');
