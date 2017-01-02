@@ -1,1 +1,0 @@
-GenericTest('cell','Toeplitz');
