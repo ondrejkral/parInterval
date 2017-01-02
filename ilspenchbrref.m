@@ -27,17 +27,12 @@ function iv = ilspenchbrref( A,b,ip,ix)
 %
 %ENDDOC====================================================================
 
-%ILSPENCHBRREF Refinement of Hans-Bliek-Rohn generalization.
-% Refinement by Hladik (2012).
-
-% p = vector of interval values in which parameters lies
-% x = enclosure obtained from Hans-Bliek-Rohn method
-
 % Inicialization of general variables.
-dimensions = ilspencmatrixdim(A);
-Y = intval(zeros(dimensions)); y = intval(zeros(dimensions(1),1));
-Z = intval(zeros(dimensions)); z = intval(zeros(dimensions(1),1));
-I = eye(dimensions);
+[m, n, numparA] = ilspencmatrixdim(A);
+[~, numparb] = ilspencbdim(b);
+Y = intval(zeros(m,n)); y = intval(zeros(m,1));
+Z = intval(zeros(m,n)); z = intval(zeros(m,1));
+I = eye(m,n);
 
 % Radius vecotr of parametric vecotr.
 radiusvector = ilspencradius(ip);
@@ -81,6 +76,7 @@ end
 % M-asteriks from refinement algorithm 2.
 M0 = I - abs(Y) - Z;
 M = inv(M0);
+
 % 'x upper-index zero' from refinement algorithm 2.
 x0 = verifylss(M0,abs(x1) - y + z);
 

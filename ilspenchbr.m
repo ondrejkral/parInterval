@@ -28,11 +28,11 @@ function iv = ilspenchbr( A, b, ip )
 %ENDDOC====================================================================
 
 % Inicialization of general variables.
-dimensions = ilspencmatrixdim(A);
-M = intval(zeros(dimensions));
-C = intval(zeros(dimensions(1),1));
-I = eye(dimensions);
-iv = intval(zeros(dimensions(1),1));
+[m, n, numparA] = ilspencmatrixdim(A);
+[~, numparb] = ilspencbdim(b);
+M = intval(zeros(m,n));
+C = intval(zeros(m,1));
+I = eye(m,n);
 
 radiusVector = ilspencradius(ip);
 
@@ -46,8 +46,6 @@ x = intval(Acenterinv*ilspencbcenter(b ,ip));
 % Meta-data cells
 A1 = A{1};
 b1 = b{1};
-numparA = A1(4);
-numparb = b1(3);
 
 % Matrix M from Theorem 4.
 parfor k = 1:length(ip)
@@ -69,13 +67,12 @@ parfor k = 1:length(ip)
 
 end
 
-% x upper-index zero from Theorem 5.
-x0 = verifylss(M0,abs(x) + C);
-
 %M-asteriks from Theorem 5.
 M0 = I - M;
 M2 = inv(M0);
 
+% x upper-index zero from Theorem 5.
+x0 = verifylss(M0,abs(x) + C);
 M2diag = diag(M2);
 
 u = x0 + (x - abs(x)).*M2diag;

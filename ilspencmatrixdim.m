@@ -1,4 +1,4 @@
-function [ m, n ] = ilspencmatrixdim( A )
+function [ m, n, pA] = ilspencmatrixdim( A )
 %BEGINDOC==================================================================
 % .Author.
 %
@@ -12,13 +12,15 @@ function [ m, n ] = ilspencmatrixdim( A )
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  A ... represenation of matrix A
+%  A ... representation of matrix A
+%  b ... representation of vector b
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
 %  m ... integer - number of rows
 %  n ... integer - number of columns
+%  pA ... number of parameters in A
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -27,5 +29,7 @@ function [ m, n ] = ilspencmatrixdim( A )
 
         m = A{1}(1);
         n = A{1}(2);
+        
+        pA = A{1}(4);
 end
 

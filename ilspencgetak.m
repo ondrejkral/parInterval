@@ -29,32 +29,32 @@ function iV = ilspencgetak(A1, Ak)
 %
 %ENDDOC====================================================================
 
-        % Obtaining matrix dimension and other meta-data.
-        m = A1(1);
-        n = A1(2);
-        
-        par = A1(3);
-        % par == 0: double values
-        % par == 1: intval values
-        
-            switch(par)
-                case 0
-                    iV = zeros(m,n);
-                    for i = 1:length(Ak(1,:))
-                        column = Ak(:,i); 
-                        iV(column(1),column(2)) = column(3);
-                    end
+% Obtaining matrix dimension and other meta-data.
+m = A1(1);
+n = A1(2);
 
-                case 1
-                    iV = intval(zeros(m,n));
-                    for i = 1:length(Ak(1,:))
-                        column = Ak(:,i); 
-                        % Must indexing with infimum.
-                        iV(column(1).inf,column(2).inf) = column(3);
-                    end
-                otherwise
-                    disp('Invalid parameter in data representation.')
-                    iV = intval(NaN);
-            end
+par = A1(3);
+% par == 0: double values
+% par == 1: intval values
+
+switch(par)
+    case 0
+        iV = zeros(m,n);
+        for i = 1:length(Ak(1,:))
+            column = Ak(:,i); 
+            iV(column(1),column(2)) = column(3);
+        end
+
+    case 1
+        iV = intval(zeros(m,n));
+        for i = 1:length(Ak(1,:))
+            column = Ak(:,i); 
+            % Must indexing with point value.
+            iV(column(1).inf,column(2).inf) = column(3);
+        end
+    otherwise
+        disp('Invalid parameter in data representation.')
+        iV = intval(NaN);
+end
 end
 

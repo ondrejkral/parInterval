@@ -28,10 +28,11 @@ function iv = ilspencbauerskeel( A, b, ip )
 %ENDDOC====================================================================
 
 % Inicialization of general variables.
-dimensions = ilspencmatrixdim(A);
-M = intval(zeros(dimensions));
-C = intval(zeros(dimensions(1),1));
-I = eye(dimensions);
+[m, n, numparA] = ilspencmatrixdim(A);
+[~, numparb] = ilspencbdim(b);
+M = intval(zeros(m,n));
+C = intval(zeros(m,1));
+I = eye(m,n);
 radiusVector = rad(ip);
 
 % precondition matrix
@@ -42,12 +43,9 @@ Acenterinv = inv(Acenter);
 x = intval(Acenterinv*ilspencbcenter(b ,ip));
 
 % Meta-data cells
-    A1 = A{1};
-    b1 = b{1};
-    numparA = A1(4);
-    numparb = b1(3);
-
-
+A1 = A{1};
+b1 = b{1};
+    
 % Matrix M from Theorem 4.
 parfor k = 1:length(ip)
     

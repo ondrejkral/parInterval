@@ -1,4 +1,4 @@
-function v = ilspencbdim( b )
+function [l, pb] = ilspencbdim( b )
 %BEGINDOC==================================================================
 % .Author.
 %
@@ -17,13 +17,15 @@ function v = ilspencbdim( b )
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  v ... integer - length of b
+%  l ... integer - length of b
+%  pb ... number of parameters in b
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
 %
 %ENDDOC==================================================================== 
 
-        v = b{1}(1);
+        l = b{1}(1);
+        pb = b{1}(3);
 end
 

@@ -29,21 +29,17 @@ function v = ilspencbcenter( b, ip )
 parameterCenter = mid(ip);
 
 % Allocation of zero vector with correct size. 
-l = ilspencbdim(b);
+[l, numparb] = ilspencbdim(b);
 v = zeros(l,1);
 
-% number of parametrs in b
-numparb = b{1}(3);
 % Computing vector at given center of parameter vector.
 for i = 1:length(ip);
     
     if i <= numparb
         bk = ilspencgetbk(b{1}, b{i+1});
-    else
-        bk = 0;
+        v = v + bk*parameterCenter(i);
     end
-    
-    v = v + bk*parameterCenter(i);
+
 end
 end
 

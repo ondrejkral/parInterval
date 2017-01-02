@@ -24,7 +24,7 @@ function v = ilspencisregular( A, ip)
 %--------------------------------------------------------------------------
 % .Implementation details.
 %
-%ENDDOC====================================================================
+%ENDDOC====================================================================v
 
 v = 0;
 
@@ -43,12 +43,17 @@ end
 Acenterinv = inv(Acenter);
 
 % Init.
-dimensions = ilspencmatrixdim(A);
-M = intval(zeros(dimensions));
+[m, n, numparA] = ilspencmatrixdim(A);
+M = intval(zeros(m,n));
+
+% Meta-cell
+A1 = A{1};
 
 % "Relaxing". See that matrix is non-negative.
-for k = 1:length(ip)
-   M = M + radiusVector(k)*abs(Acenterinv*intval(ilspencgetak(A{1},A{k+1})));
+parfor k = 1:length(ip)
+    if k <= numparA
+    M = M + radiusVector(k)*abs(Acenterinv*intval(ilspencgetak(A1,A{k+1})));
+    end
 end
 
 % Application of theorems in section 1.4 of the thesis.

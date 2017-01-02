@@ -29,9 +29,10 @@ function [ iAres, ibres] = ilspencresidualform( A, b, ip )
 %ENDDOC====================================================================
 
 % Initial allocation.
-dimensions = ilspencmatrixdim(A);
-iAres = intval(zeros(dimensions));
-ibres = intval(zeros(dimensions(1),1));
+[m, n, numparA] = ilspencmatrixdim(A);
+[~, numparb] = ilspencbdim(b);
+iAres = intval(zeros(m,n));
+ibres = intval(zeros(m,1));
 
 % Precondition matrix.
 Cinv = inv(ilspencmatrixcenter(A,ip));
@@ -39,13 +40,21 @@ Cinv = inv(ilspencmatrixcenter(A,ip));
 % "Center" of solution set.
 x = Cinv*ilspencbcenter(b ,ip);
 
+% Meta-data cells
+A1 = A{1};
+b1 = b{1};
+
 % Residual form.
-for k = 1:length(ip)
-    iAres = iAres + ip(k)*(Cinv*intval(ilspencgetak(A,k)));
+parfor k = 1:length(ip)
+    if k <= numparA
+    iAres = iAres + ip(k)*(Cinv*intval(ilspencgetak(A1,A{k+1})));
+    end
 end
 
-for k = 1:length(ip)
-    ibres = ibres + ip(k)*(Cinv*(ilspencgetbk(b,k) - ilspencgetak(A,k)*intval(x)));
+parfor k = 1:length(ip)
+    if k <= numparb
+    ibres = ibres + ip(k)*(Cinv*(ilspencgetbk(b1,b{k+1}) - ilspencgetak(A1,A{k+1})*intval(x)));
+    end
 end
 
 end

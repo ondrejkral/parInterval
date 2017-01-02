@@ -28,11 +28,10 @@ function iv = ilspencbsref( A,b,ip,ix)
 %ENDDOC==================================================================== 
 
 % Inicialization of general variables.
-dimensions = ilspencmatrixdim(A);
-Y = intval(zeros(dimensions)); y = intval(zeros(dimensions(1),1));
-Z = intval(zeros(dimensions)); z = intval(zeros(dimensions(1),1));
-I = eye(dimensions);
-rows = dimensions(1);
+[m, n, numparA] = ilspencmatrixdim(A);
+Y = intval(zeros(m,n)); y = intval(zeros(m,1));
+Z = intval(zeros(m,n)); z = intval(zeros(m,1));
+I = eye(m,n);
 
 % Radius vector of parametric vector.
 radiusvector = ilspencradius(ip);
@@ -58,7 +57,7 @@ for k = 1:length(ip)
     
     a = Acenterinv*(Ak*ix - bk);
     radiusK = radiusvector(k);
-    parfor j = 1:rows
+    parfor j = 1:m
         if inf(a(j)) >= 0
             Y(j,:) = Y(j,:) + radiusK*Acenterinv(j,:)*Ak;
             y(j) = y(j) + radiusK*Acenterinv(j,:)*(Ak*x1 - bk);

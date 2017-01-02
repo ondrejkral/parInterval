@@ -29,21 +29,17 @@ function V = ilspencmatrixcenter( A, ip)
 parameterCenter = mid(ip);
 
 % Allocation of the zero matrix with correct size. 
-[m,n] = ilspencmatrixdim(A);
+[m,n,numparA] = ilspencmatrixdim(A);
 V = zeros(m,n);
-
-% number of parameters in A
-numparA = A{1}(4);
 
 % Computing matrix at given center of parameteric vector.
 % Not verified, approximate value.
-for i = 1:length(ip)
+parfor i = 1:length(ip)
     
     if i <= numparA
         Ak = ilspencgetak(A{1}, A{i+1});
-    else
-        Ak = 0;
+        V = V + Ak*parameterCenter(i);
     end
-    V = V + Ak*parameterCenter(i);
+
 end
 end

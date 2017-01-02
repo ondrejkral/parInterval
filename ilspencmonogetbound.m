@@ -35,12 +35,11 @@ function iv = ilspencmonogetbound( A, b, ip, derivatives, i, option)
 %
 %ENDDOC====================================================================
 
-iv = intval(NaN);
-
 % Based on signs of derivates we can reduce some parameters to points.
 lowerp = intval(zeros(length(derivatives),1));
 upperp = intval(zeros(length(derivatives),1));
-for j=1:length(derivatives)
+
+parfor j=1:length(derivatives)
     if derivatives(j) >= 0
         lowerp(j) = ip(j).inf;
         upperp(j) = ip(j).sup;

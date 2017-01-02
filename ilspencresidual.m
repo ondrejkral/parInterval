@@ -27,6 +27,8 @@ function iv = ilspencresidual( A, b, ip, option )
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
+% "Center" x must be computed in same way as in ilspencresidualform() 
+% to maintain rigorous envelope of solution.
 %
 %ENDDOC====================================================================
 
