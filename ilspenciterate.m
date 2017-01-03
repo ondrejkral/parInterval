@@ -36,21 +36,17 @@ if iterations == 0
     iresult = ilspencresidual(A,b,ip, 'SKALNA');  
     
 elseif iterations > 0
-    % Class for division of parameters' space.
-    divisonManager = divisor(ip, iterations, option);
     
-    % Getting first subspace and inicializing variable "iresult".
-    ip = divisonManager.nextPar();
-    
-    iresult = ilspencresidual(A,b,ip, 'SKALNA'); 
-   
+    newp = ilspencnextpar(1,ip,iterations, option);
+    iresult = ilspencresidual(A,b,newp, 'SKALNA'); 
+  
     % Iteratively union results.
     parfor i = 2:(2^iterations)
         
         % Getting next subspace.
-        ip = divisonManager.nextPar();
+        newp = ilspencnextpar(i,ip, iterations, option);
 
-        v1 = ilspencresidual(A,b,ip, 'SKALNA'); 
+        v1 = ilspencresidual(A,b,newp, 'SKALNA'); 
         iresult = hull(iresult,v1);
 
     end

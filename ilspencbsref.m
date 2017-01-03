@@ -29,6 +29,7 @@ function iv = ilspencbsref( A,b,ip,ix)
 
 % Inicialization of general variables.
 [m, n, numparA] = ilspencmatrixdim(A);
+[~, numparb] = ilspencbdim(b);
 Y = intval(zeros(m,n)); y = intval(zeros(m,1));
 Z = intval(zeros(m,n)); z = intval(zeros(m,1));
 I = eye(m,n);
@@ -42,33 +43,44 @@ Acenterinv = inv(ilspencmatrixcenter(A,ip));
 % x-asterisk from Theorem 4.
 x1 = intval(Acenterinv*ilspencbcenter(b ,ip));
 
-for k = 1:length(ip)  
+% Meta-cells
+A1 = A{1};
+b1 = b{1};
+
+parfor k = 1:length(ip) 
+    Yadd = intval(zeros(m,n)); yadd = intval(zeros(m,1));
+    Zadd = intval(zeros(m,n)); zadd = intval(zeros(m,1));
+    
    if k <= numparA
         Ak = ilspencgetak(A1, A{k+1});
     else
-        Ak = 0;
+        Ak = zeros(m,n);
     end
     
     if k <= numparb
         bk = ilspencgetbk(b1, b{k+1});
     else
-        bk = 0;
+        bk = zeros(m,1);
     end
     
     a = Acenterinv*(Ak*ix - bk);
     radiusK = radiusvector(k);
-    parfor j = 1:m
+    for j = 1:m
         if inf(a(j)) >= 0
-            Y(j,:) = Y(j,:) + radiusK*Acenterinv(j,:)*Ak;
-            y(j) = y(j) + radiusK*Acenterinv(j,:)*(Ak*x1 - bk);
+            Yadd(j,:) = radiusK*Acenterinv(j,:)*Ak;
+            yadd(j) = radiusK*Acenterinv(j,:)*(Ak*x1 - bk);
         elseif sup(a(j)) <= 0
-            Y(j,:) = Y(j,:) - radiusK*Acenterinv(j,:)*Ak;
-            y(j) = y(j) - radiusK*Acenterinv(j,:)*(Ak*x1 - bk);
+            Yadd(j,:) = - radiusK*Acenterinv(j,:)*Ak;
+            yadd(j) = - radiusK*Acenterinv(j,:)*(Ak*x1 - bk);
         else
-            Z(j,:) = Z(j,:) + radiusK*abs(Acenterinv(j,:)*Ak);
-            z(j) = z(j) + radiusK*abs(Acenterinv(j,:)*(Ak*x1 - bk));
+            Zadd(j,:) = radiusK*abs(Acenterinv(j,:)*Ak);
+            zadd(j) = radiusK*abs(Acenterinv(j,:)*(Ak*x1 - bk));
         end
     end
+    Y = Y + Yadd;
+    Z = Z + Zadd;
+    y = y + yadd;
+    z = z + zadd;
 end
 
 refinement = verifylss(I - abs(Y) - Z, y + z);

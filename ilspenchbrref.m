@@ -15,7 +15,7 @@ function iv = ilspenchbrref( A,b,ip,ix)
 %  A ... represenation of matrix A
 %  b ... representation of vector b
 %  ip ... interval vector - parameters
-%  ix ... interval vector - enclosure of the solution to refine
+%  ix .. . interval vector - enclosure of the solution to refine
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -43,34 +43,47 @@ Acenterinv = inv(ilspencmatrixcenter(A,ip));
 % Approximate solution. 
 x1 = Acenterinv*ilspencbcenter(b ,ip);
 
-for k = 1:length(ip)
+% Meta-cells
+A1 = A{1};
+b1 = b{1};
+
+parfor k = 1:length(ip)
+    
+    Yadd = intval(zeros(m,n)); yadd = intval(zeros(m,1));
+    Zadd = intval(zeros(m,n)); zadd = intval(zeros(m,1));
+    
     if k <= numparA
         Ak = ilspencgetak(A1, A{k+1});
     else
-        Ak = 0;
+        Ak = zeros(m,n);
     end
     
     if k <= numparb
         bk = ilspencgetbk(b1, b{k+1});
     else
-        bk = 0;
+        bk = zeros(m,1);
     end
     
     a = Acenterinv*(Ak*ix - bk);
     radiusK = radiusvector(k);
     
-    parfor j = 1:dimensions(1)
+    for j = 1:m
         if inf(a(j)) >= 0
-            Y(j,:) = Y(j,:) + radiusK*Acenterinv(j,:)*Ak;
-            y(j) = y(j) + radiusK*Acenterinv(j,:)*bk;
+            Yadd(j,:) = radiusK*Acenterinv(j,:)*Ak;
+            yadd(j) = radiusK*Acenterinv(j,:)*bk;
         elseif sup(a(j)) <= 0
-            Y(j,:) = Y(j,:) - radiusK*Acenterinv(j,:)*Ak;
-            y(j) = y(j) - radiusK*Acenterinv(j,:)*bk;
+            Yadd(j,:) = - radiusK*Acenterinv(j,:)*Ak;
+            yadd(j) = - radiusK*Acenterinv(j,:)*bk;
         else
-            Z(j,:) = Z(j,:) + radiusK*abs(Acenterinv(j,:)*Ak);
-            z(j) = z(j) + radiusK*abs(Acenterinv(j,:)*bk);
+            Zadd(j,:) =  radiusK*abs(Acenterinv(j,:)*Ak);
+            zadd(j) = radiusK*abs(Acenterinv(j,:)*bk);
         end
+        
     end
+    Z = Z + Zadd;
+    Y = Y + Yadd;
+    z = z + zadd;
+    y = y + yadd;
 end
 
 % M-asteriks from refinement algorithm 2.
@@ -82,8 +95,8 @@ x0 = verifylss(M0,abs(x1) - y + z);
 
 M2diag = diag(M);
 
-u = x0 + (x - abs(x)).*M2diag;
-d = -x0 + (x + abs(x)).*M2diag;
+u = x0 + (x1 - abs(x1)).*M2diag;
+d = -x0 + (x1 + abs(x1)).*M2diag;
 coef = (1/(2*M2diag - 1))';
 
 iv = hull(min(inf(d),inf(coef.*d)),max(sup(u),sup(coef.*u)));

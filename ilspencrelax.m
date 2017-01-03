@@ -29,7 +29,7 @@ function [ Ar, br ] = ilspencrelax( A,b,ip )
 
 % init
 [m,n, numparA] = ilspencmatrixdim(A);
-[~, numparb] = ilspencmatrixdim(b);
+[~, numparb] = ilspencbdim(b);
 Ar = intval(zeros(m,n));
 br = intval(zeros(m,1));
 

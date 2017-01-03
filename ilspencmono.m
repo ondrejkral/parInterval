@@ -32,6 +32,10 @@ function iv = ilspencmono( A, b, ip, option)
 %
 %ENDDOC====================================================================
 
+%init
+[m, n, numparA] = ilspencmatrixdim(A);
+[~, numparb] = ilspencbdim(b);
+
 % First, we need to compute initial encolsure x*. 
 % We can use some of our other methods.
 x = ilspencresidual(A,b,ip,'SKALNA');
@@ -40,7 +44,7 @@ x = ilspencresidual(A,b,ip,'SKALNA');
 [Ar, ~] = ilspencrelax(A,b,ip);
 
 % Checking derivative signs of solution with respect to parameters.
-D = intval(zeros(length(x),length(ip)));
+%D = intval(zeros(length(x),length(ip)));
 
 % Meta-cells
 A1 = A{1};
@@ -55,15 +59,15 @@ parfor k = 1:length(ip)
     % vector.
     
     if k <= numparA
-        Ak = ilspencgetAk(A1, A{k+1})
+        Ak = ilspencgetak(A1, A{k+1});
     else
-        Ak = 0;
+        Ak = zeros(m,n);
     end
     
     if k <= numparb
-        bk = ilspencgetbk(b1, b{k+1})
+        bk = ilspencgetbk(b1, b{k+1});
     else
-        bk = 0;
+        bk = zeros(m,1);
     end
     
     db = bk - Ak*x;

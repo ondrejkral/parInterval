@@ -1,4 +1,4 @@
-function iV = ilspencgetak(A1, Ak)
+function iV = ilspencgetak(A1, Ak,k)
 %BEGINDOC==================================================================
 % .Author.
 %
@@ -37,21 +37,28 @@ par = A1(3);
 % par == 0: double values
 % par == 1: intval values
 
+% number of defined parameters;
+%maxpar = A1(4);
+
 switch(par)
     case 0
         iV = zeros(m,n);
-        for i = 1:length(Ak(1,:))
-            column = Ak(:,i); 
-            iV(column(1),column(2)) = column(3);
-        end
+        %if k <= maxpar
+            for i = 1:length(Ak(1,:))
+                column = Ak(:,i); 
+                iV(column(1),column(2)) = column(3);
+            end
+        %end
 
     case 1
         iV = intval(zeros(m,n));
-        for i = 1:length(Ak(1,:))
-            column = Ak(:,i); 
-            % Must indexing with point value.
-            iV(column(1).inf,column(2).inf) = column(3);
-        end
+        %if k <= maxpar
+            for i = 1:length(Ak(1,:))
+                column = Ak(:,i); 
+                % Must indexing with point value.
+                iV(column(1).inf,column(2).inf) = column(3);
+            end
+        %end
     otherwise
         disp('Invalid parameter in data representation.')
         iV = intval(NaN);

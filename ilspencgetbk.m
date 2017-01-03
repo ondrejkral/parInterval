@@ -1,4 +1,4 @@
-function iv = ilspencgetbk( b1, bk)
+function iv = ilspencgetbk( b1, bk,k)
 %BEGINDOC==================================================================
 % .Author.
 %
@@ -31,35 +31,40 @@ function iv = ilspencgetbk( b1, bk)
 %
 %ENDDOC====================================================================
 
-        	%Obtaining b-vector dimension and other meta-data.
-            m = b1(1);
-            par = b1(2);
-            % par == 0: double values
-            % par == 1: intval values
-           
-            switch(par)
-                case 0
-                iv = zeros(m,1);
+%Obtaining b-vector dimension and other meta-data.
+m = b1(1);
+par = b1(2);
+% par == 0: double values
+% par == 1: intval values
 
-                
-                for i = 1:length(bk(1,:))
-                    column = bk(:,i); 
-                    iv(column(1)) = column(2);
-                end
+% number of defined parameters
+%maxpar = b1(3);
 
-                case 1
-                iv = intval(zeros(m,1));
+switch(par)
+    case 0
+    iv = zeros(m,1);
 
-                
-                for i = 1:length(bk(1,:))
-                    column = bk(:,i);
-                    % Must indexing with infimum.
-                    iv(column(1).inf) = column(2);
-                end 
-            
-            otherwise
-                disp('Invalid parameter in data representation.')
-                iv = intval(NaN);
-            end                
+    %if k <= maxpar
+        for i = 1:length(bk(1,:))
+            column = bk(:,i); 
+            iv(column(1)) = column(2);
+        end
+    %end
+
+    case 1
+    iv = intval(zeros(m,1));
+
+    %if k <= maxpar
+        for i = 1:length(bk(1,:))
+            column = bk(:,i);
+            % Must indexing with infimum.
+            iv(column(1).inf) = column(2);
+        end 
+    %end
+
+otherwise
+    disp('Invalid parameter in data representation.')
+    iv = intval(NaN);
+end                
 end
 
