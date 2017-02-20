@@ -10,11 +10,11 @@ matrixDimSample = [5, 10, 15, 20, 25, 50, 100];
 methodsCount = 10;
 
 % Active methods set to all.
-am = zeros(methodsCount,1);
+am = ones(methodsCount,1);
 
-am(8) = 1;
-
-
+am(8) = 0;
+am(9) = 0;
+am(10) = 0;
 
 % coefMagMultSample = [5, 10, 15 20, 25];
 coefmagnitude = 1; 
@@ -22,11 +22,13 @@ coefmagnitude = 1;
 
 % logging results
 fileName = strcat('test-',datestr(datetime(),'dd-mm-yy-HH-MM'),matrixType,'.txt');
-fileLoc = 'C:\Users\ondre\Documents\MATLAB\';
+%fileLoc = 'C:\Users\ondre\Documents\MATLAB\';
+ fileLoc = '';
 fileAddr = strcat(fileLoc,fileName);
 
 % setting parallel options
-cores = feature('numcores');
+% cores = feature('numcores');
+cores = 2;
 
 for cN = 1:cores
 % maxNumCompThreads(cN);
@@ -153,7 +155,7 @@ parpool(cores - cN + 1);
 
                 end
 
-                % compute avarage time, radius and completeness over iterations
+                % compute avarage time, radius over iterations
                 resulttime = zeros(1,methodsCount);
                 for z = 1:methodsCount
                     resulttime(z) = t(z)/iterations;
@@ -168,7 +170,7 @@ parpool(cores - cN + 1);
                 % write data to file
                 for a = 1:methodsCount
                     if am(a) == 1
-                        fprintf(fileID,'%.8f %.8f %d %d %d %d \n',resultradius(a),resulttime(a),matrixdim, radius, a);
+                        fprintf(fileID,'%.8f %.8f %d %d %d %d \n',resultradius(a),resulttime(a),matrixdim, radius, cN, a);
                     end
                 end
                 fclose(fileID);
