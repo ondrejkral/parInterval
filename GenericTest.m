@@ -28,7 +28,7 @@ fileAddr = strcat(fileLoc,fileName);
 
 % setting parallel options
 % cores = feature('numcores');
-cores = 2;
+cores = 4;
 
 for cN = 1:cores
 % maxNumCompThreads(cN);
